@@ -1,0 +1,194 @@
+<% include ../partials/header %>
+
+<div class="ui main container">
+    <div class="ui stackable mobile reversed grid">
+        <div class="four wide column">
+            <div class="ui segments">
+                <div class="ui segment">
+                    <div class="item"> Recent Topics</div>
+                </div>
+                <% allTopics.slice(-5).reverse().forEach(function(allTopics){ %>
+                    <div class="ui blue segment">
+                        <div class="item"><a href="/corner/<%= allTopics._id %>"><%= allTopics.title %></a></div>
+                    </div>
+                <% }); %>
+                <div class="ui red segment">
+                    <div class="item"><a href="/corner"> Back to All Topics</a></div>
+                </div>
+            </div>
+        </div>
+        <div class="twelve wide column">
+            <div class="ui segment">
+                <h2><%= topic.title %></h2>     
+                <p><%= topic.description %></p>
+                <p>Added by: <a href="/profile/<%=topic.author.id %>"><%= topic.author.username %></a></p>
+                <button class="ui compact basic basic button" onclick="actOnPost(event);" data-post-id="<%= topic._id %>"> Like </button>
+                <span id="likes-count-<%= topic._id %>"> <%= topic.likes_count %> </span>
+                <% if(currentUser && topic.author.id.equals(currentUser._id)) { %>
+                    <a class="ui basic button orange" href="/corner/<%=topic._id %>/edit"> Edit</a>
+                    <form class="ui form delete-form" action="/corner/<%=topic._id %>/?_method=DELETE" method="POST">
+                        <input type="submit" class="ui basic button red" value="Delete"/>
+                    </form>
+                <% } %>
+            </div>
+            <div class="ui segments">
+                <div class="ui segment" id="new-comment">
+                    <a class="ui violet small button basic" href="/corner/<%= topic._id %>/comments/new">Add new comment</a>
+                </div>
+                <div class="ui segments" id="comment">
+                    <% topic.comments.reverse().forEach(function(comment){ %>
+                        <div class="ui segment single-comment">
+                            <div id="comment-info">
+                                <div class="ui meta"><%= comment._id.getTimestamp().toString().substring(0,15) %></div>
+                                <div class="ui"><a href="/profile/<%= comment.author.id %>"><%= comment.author.username %></a></div>
+                            </div>                            
+                            <div class="item comment-body"><%= comment.body %></div>
+                            <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
+                                <button class="ui compact icon basic button comment-button"><a href="/corner/<%= topic._id %>/comments/<%= comment._id %>/edit"><i class="edit icon"></i></a></button>
+                                <form class="ui form delete-form" action="/corner/<%=topic._id %>/comments/<%= comment._id %>/?_method=DELETE" method="POST">
+                                    <button class="ui compact icon basic button" type="submit"><i class="trash alternate icon"></i></button>
+                                </form>
+                            <% } %>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+            <div class="ui segment" id="chat">
+                <h4>Chat:</h4>
+                <ul class="ui list" id="messages">
+                    <div class="item">Admin: Welcome!</div>
+                </ul>
+                <form action="" class="ui form" id="chat-form">
+                    <div class="ui grid">
+                        <div class="two column row">
+                            <div class="column">
+                                <input id="m" autocomplete="off"/>
+                            </div>
+                            <div class="column">
+                                <button class="ui button basic blue">Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="ui cards">
+        <div class="red card video-cards">
+            <p class="instructions">Chat Partner Video</p>
+            <div id="remote-media"></div>
+        </div>
+        <div class="blue card video-cards">
+            <div class="controls">
+                <div id="preview">
+                    <button class="ui basic button grey" id="button-preview">Preview My Camera</button>
+                    <div id="local-media"></div>
+                </div>
+            </div>
+        </div>
+        <div class="blue card video-cards">
+            <div class="controls">
+                <div id="room-controls">
+                    <% if(currentUser){ %>
+                        <p>Room Name:</p>
+                        <div class="ui input">
+                            <input  id="room-name" type="text" placeholder="Enter a room name" />
+                        </div>
+                        <button class="ui basic button grey" id="button-join">Join Room</button>
+                        <button class="ui basic button grey" id="button-leave">Leave Room</button>
+                    <% } else { %>
+                        <p>Log in to join video chat! </p>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="grey card video-cards">
+            <div class="four wide column controls">
+                <p> Log: </p>
+                <div id="log"></div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://js.pusher.com/4.1/pusher.min.js"></script>
+<script>
+    <% if(currentUser) { %>
+        var chatUser = "<%= currentUser.username %>";
+        $(function() {
+            var socket = io();
+            $('#chat-form').submit(function(){
+                socket.emit('chat message', chatUser + ": " + $('#m').val());
+                $('#m').val('');
+                return false;
+            });
+            socket.on('chat message', function(msg){
+                $('#messages').append($('<div class="item">').text(msg));
+            });
+        });
+        console.log(chatUser);
+    <%}%>
+    <% if(!currentUser) { %>
+        var guestId = Date.now();
+        $(function() {
+            var socket = io();
+            $('#chat-form').submit(function(){
+                socket.emit('chat message', "Guest" + guestId.toString().slice(-5) + ": " + $('#m').val());
+                $('#m').val('');
+                return false;
+            });
+            socket.on('chat message', function(msg){
+                $('#messages').append($('<div class="item">').text(msg));
+            });
+        });
+    <%}%>
+</script>
+<script>
+    var updatePostStats = {
+        Like: function(postId){
+            document.querySelector('#likes-count-' + postId).textContent++;
+        },
+        Unlike: function(postId){
+            document.querySelector('#likes-count-' + postId).textContent--;
+        }
+    };
+    var toggleButtonText = {
+        Like: function(button){
+            button.textContent = "Unlike";
+        },
+        Unlike: function(button){
+            button.textContent = "Like";
+        }
+    };
+    var actOnPost = function(event) { 
+        var postId = event.target.dataset.postId;
+        var action = event.target.textContent.trim();
+        toggleButtonText[action](event.target);
+        updatePostStats[action](postId);
+        axios.post('/corner/' + postId + '/act', {action: action});
+    }; 
+</script>
+<script>
+    var pusher = new Pusher('aadf45a66a5f71fd6afc', {
+        cluster: 'us2'
+    });
+    var socketId;
+    //retrieve the socket ID on successful connection
+    pusher.connection.bind('connected', function(){
+        socketId = pusher.connection.socket_id;
+    });
+    var channel = pusher.subscribe('post-events');
+    channel.bind('postAction', function(data){
+        //log message data to console - for debugging 
+        console.log(data);
+        var action = data.action;
+        updatePostStats[action](data.postId);
+    });
+</script>
+
+<script src="/js/bindex.js"></script>
+<% include ../partials/footer %>

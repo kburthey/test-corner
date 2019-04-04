@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Point Per View</title>
+        <link href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.min.css' rel='stylesheet' type='text/css'>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link href="/stylesheets/app.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div class="ui fixed inverted menu" id="header-menu">
+            <div class="ui container">
+                <div class="header item"><i class="user outline icon"></i>Point Per View</div>
+                <a href="/" class="item">Home</a>
+                <a href="/corner/new" class="item">New Discussion</a>
+                <div class="right menu">
+                    <% if(!currentUser){  %>
+                        <div class="item"><a href="/login">Login</a></div>
+                        <div class="item"><a href="/register">Register</a></div>
+                    <% } else { %>
+                        <div class="item"><a href="/profile/<%= currentUser._id %>"><%= currentUser.username.toUpperCase() %></a></div>
+                        <div class="item"><a href="/logout">Logout</a></div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <div class="ui main container">
+            <% if(error && error.length > 0){ %>
+                <div class="ui negative message">
+                    <div class="header"><%= error %></div>
+                </div>
+            <% } %>
+            <% if(success && success.length > 0){ %>
+                <div class="ui success message">
+                    <div class="header"><%= success %></div>
+                </div>
+            <% } %>
+        </div>

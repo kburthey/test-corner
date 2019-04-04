@@ -1,0 +1,114 @@
+<% include ./partials/header %>
+<div class="ui main container">
+        <div class="ui relaxed grid container">
+                <div class="four wide column">
+                        <h1 class="ui"> </h1>
+                        <div class="ui card">
+                                <div class="image">
+                                        <img src="https://stroops.com/wp-content/uploads/2016/11/placeholder-profile-male-500x500.png">
+                                </div>
+                                <div class="content">
+                                        <a class="header"><%= user.username %></a>
+                                        <div class="">
+                                                <span class="date">Joined: <%= user._id.getTimestamp().toString().substring(4,15) %></span>
+                                        </div>
+                                        <div class="description">
+                                                <p> Location: <%= user.location %></p>
+                                                <p> Bio: <%= user.info %> </p>
+                                        </div>
+                                </div>
+                                <div class="extra content">
+                                        <p><a><i class="user icon"></i><%= user.followers.length %> Follower(s)</a></p>
+                                        <p><a><i class="user icon"></i>Likes <%= user.like_count %></a></p>
+                                </div>
+                                <% if(currentUser && user.username == currentUser.username ){ %>
+                                        <a class="ui basic button orange" href="/profile/<%=user._id %>/edit"> Edit</a>
+                                        <form class="ui form delete-form" action="/profile/<%=user._id %>/?_method=DELETE" method="POST">
+                                                <input type="submit" class="ui basic button red" value="Delete"/>
+                                        </form>
+                                <% } else { %>
+                                        <form class="ui form delete-form" action="/profile/<%=user._id %>/follow" method="POST">
+                                                <input type="submit" class="ui basic button red" value="Follow"/>
+                                        </form>
+                                        <form class="ui form delete-form" action="/profile/<%=user._id %>/like" method="POST">
+                                                <input type="submit" class="ui basic button red" value="Like"/>
+                                        </form>
+                                <% } %>
+                        </div>
+                </div>
+                <div class="eight wide column">
+                        <div class="ui feed">
+                        <h1> </h1>
+                        <h3> Your Feed... </h3>
+                        <% user.followers.slice(-15).reverse().forEach(function(follower){ %>
+                                <div class="event">
+                                        <div class="label">
+                                                <img src="https://stroops.com/wp-content/uploads/2016/11/placeholder-profile-male-500x500.png">
+                                        </div>
+                                        <div class="content">
+                                                <div class="summary">
+                                                        <a class="user" href="/profile/<%= follower.user.id %>"><%= follower.user.username %></a> started following you
+                                                        <div class="date"><%= follower.user.id.getTimestamp().toString().substring(0,15) %></div>
+                                                </div>
+                                                <div class="meta">
+                                                        <a class="like"><i class="like icon"></i> 4 Likes</a>
+                                                </div>
+                                        </div>
+                                </div>
+                        <% }) %>
+                                <div class="event">
+                                        <div class="label">
+                                                <img src="https://stroops.com/wp-content/uploads/2016/11/placeholder-profile-male-500x500.png">
+                                        </div>
+                                        <div class="content">
+                                                <div class="summary">
+                                                        <a class="user">Jenny Hess</a> added you as a friend
+                                                        <div class="date">2 Days Ago</div>
+                                                </div>
+                                                <div class="meta">
+                                                        <a class="like"><i class="like icon"></i> 8 Likes</a>
+                                                </div>
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="four wide column">
+                        <h1> </h1>
+                        <div class="ui card">
+                                <div class="content">
+                                        <div class="header">Recent Activity</div>
+                                </div>
+                                <div class="content">
+                                        <h4 class="ui sub header">Activity</h4>
+                                        <div class="ui small feed">
+                                                <div class="event">
+                                                        <div class="content">
+                                                                <div class="summary">
+                                                                        <a>Elliot Fu</a> added <a>Jenny Hess</a> to the project
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                                <div class="event">
+                                                        <div class="content">
+                                                                <div class="summary">
+                                                                        <a>Stevie Feliciano</a> was added as an <a>Administrator</a>
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                                <div class="event">
+                                                        <div class="content">
+                                                                <div class="summary">
+                                                                        <a>Helen Troy</a> added two pictures
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
+                                <div class="extra content">
+                                        <button class="ui button">Join Project</button>
+                                </div>
+                        </div>
+                </div>
+        </div> 
+</div>
+<% include ./partials/footer %>

@@ -1,0 +1,48 @@
+<% include ../partials/header %>
+
+<div class="ui main container">
+    <div class="ui segments">
+        <div class="ui segment">
+            <h3>Newest</h3>
+        </div>
+        <div class="ui segments">
+            <% topics.slice(-3).reverse().forEach(function(topic){ %>
+                <div class="ui segment">
+                    <h4> <%= topic.title %> </h4>
+                    <p> <%= topic.description %></p>
+                    <a class="ui violet basic button" href="/corner/<%= topic._id %>">Join Discussion</a>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+    <div class="ui segments">
+        <div class="ui segment">
+            <h3>Popular</h3>
+        </div>
+        <div class="ui segments">
+            <% fopic.slice(-3).reverse().forEach(function(topic){ %>
+                <div class="ui segment">
+                    <h4> <%= topic.title %> </h4>
+                    <p> <%= topic.description %></p>
+                    <a class="ui violet basic button" href="/corner/<%= topic._id %>">Join Discussion</a>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+    <div class="ui segments">
+        <div class="ui segment">
+            <h3>All</h3>
+        </div>
+        <div class="ui segments">
+            <% topics.forEach(function(topic){ %>
+                <div class="ui segment">
+                    <h4> <%= topic.title %> </h4>
+                    <p> <%= topic.description %></p>
+                    <a class="ui violet basic button" href="/corner/<%= topic._id %>">Join Discussion</a>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+</div>
+
+<% include ../partials/footer %>

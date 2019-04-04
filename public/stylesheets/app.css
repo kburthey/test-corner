@@ -1,0 +1,80 @@
+.main.container {
+    margin-top: 3.5em;
+    width: 70%!important;
+    min-width: 600px; 
+}
+.show.container {
+    width: 600px;
+}
+.meta {
+    float: right;
+}
+#messages { 
+    list-style-type: none; 
+    margin: 10px 0; 
+    padding: 0; 
+    max-height: 12em;
+    overflow-y: scroll;
+}
+#messages div{ 
+    padding: 5px 10px; 
+}
+#messages div:nth-child(odd) { 
+    background: #eee; 
+}
+#comment {
+    max-height: 160px;
+    overflow-y: scroll;
+}
+.ui.segment.single-comment {
+    padding-bottom: 10px;
+}
+#comment-info{
+    font-weight: bold;
+}
+.delete-form {
+    display: inline;
+}
+div.item.comment-body {
+    padding-bottom: 5px;
+}
+
+div#remote-media {
+    width: 100%;
+    text-align: center;
+    margin: auto
+}
+div#remote-media video {
+    margin: 3em 2em;
+    height: 70%;
+    max-width: 100% !important;
+    background-color: #272726;
+    background-repeat: no-repeat;
+  }
+div.ui.cards {
+    height: 16em;
+    margin: auto;
+    width: 80%;
+}
+div.video-cards{
+    height: 16em;
+    margin: auto;
+}
+div.controls, p.instructions {
+    width: 100%;
+    padding: 1em;
+    margin: 0 auto;
+  }
+#room-name {
+    margin-bottom: 1em;
+}
+#room-name, #button-leave, #button-join, #button-preview, #preview, #remote-media {
+    width: 100%;
+}
+#local-media, #preview, #local-media video, #remote-media video {
+    width: 100%;
+}
+#log {
+    overflow-y: scroll;
+    max-height: 15em;
+}
